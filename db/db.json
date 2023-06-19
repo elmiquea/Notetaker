@@ -1,0 +1,22 @@
+[
+    {
+        "text": "Some text",
+        "title": "New Note here",
+        "note_id": "de31"
+    },
+    {
+        "text": "Bananas\napples\ncereal ",
+        "title": "Groceries",
+        "note_id": "2321"
+    },
+    {
+        "text": "Coding stuff",
+        "title": "Homework",
+        "note_id": "dc82"
+    },
+    {
+        "text": "Football practice",
+        "title": "Sports",
+        "note_id": "d3e6"
+    }
+]
