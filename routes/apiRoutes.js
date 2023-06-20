@@ -1,71 +1,63 @@
-// Set Router to be a router for express.js
+// Import express and create a router
+const express = require('express');
 const router = require('express').Router();
 
-// Require fs, File System, functionality to be able to access the db.json file and adjust it based on coding
+// Import fs to read and write the db.json file
 const fs = require('fs');
 
-// Require the uuid functionality, which builds a unique user id we can add to the note
+// Import uuid to generate unique ids for the notes
 const uuid = require('../helpers/uuid');
 
-// Hanlde Get of existing notes, to populate on page
-router.get('/notes', function (_req, res) {
-  fs.readFile('./db/db.json', (err, data) => {
-    if (err) throw err;
-    dbData = JSON.parse(data);
-    res.send(dbData);
-  });
+// Define a function to read the db.json file and parse it as JSON
+const readDbFile = () => {
+  const data = fs.readFileSync('./db/db.json');
+  return JSON.parse(data);
+};
+
+// Define a function to write the db.json file with a given JSON object
+const writeDbFile = (data) => {
+  const stringData = JSON.stringify(data);
+  fs.writeFileSync('./db/db.json', stringData);
+};
+
+// Handle GET requests for /notes and send back the db.json data
+router.get('/notes', (_req, res) => {
+  const dbData = readDbFile();
+  res.send(dbData);
 });
 
-// Handle the Post of new notes when user clicks save
-router.post('/notes', function (req, res) {
-  const userNotes = req.body;
+// Handle POST requests for /notes and add a new note to the db.json file
+router.post('/notes', (req, res) => {
+  // Get the note from the request body
+  const userNote = req.body;
 
-  fs.readFile('./db/db.json', (err, data) => {
-    if (err) throw err;
-    dbData = JSON.parse(data);
-    dbData.push(userNotes);
-    dbData.forEach((notes, index) => {
-      notes.id = uuid();
-      return dbData;
-    });
-    console.log(dbData);
+  // Read the db.json file and push the new note with a unique id
+  const dbData = readDbFile();
+  userNote.id = uuid();
+  dbData.push(userNote);
 
-    stringData = JSON.stringify(dbData);
+  // Write the updated data to the db.json file
+  writeDbFile(dbData);
 
-    fs.writeFile('./db/db.json', stringData, (err, data) => {
-      if (err) throw err;
-    });
-  });
+  // Send a response message
   res.send('Note Added');
 });
 
+// Handle DELETE requests for /notes/:id and remove a note from the db.json file by id
+router.delete('/notes/:id', (req, res) => {
+  // Get the id of the note to delete from the request params
+  const deleteNoteId = req.params.id;
 
-// Handle the Delete HTTP request of a note, based on ID, from user clicking the delete icon
-router.delete('/notes/:id', function (req, res) {
-  // Get the ID of the note user wants to remove
-  const deleteNote = req.params.id;
-  console.log(`Delete note ID: ${deleteNote}`);
+  // Read the db.json file and filter out the note with the matching id
+  const dbData = readDbFile();
+  const filteredData = dbData.filter((note) => note.id !== deleteNoteId);
 
-  fs.readFile('./db/db.json', (err, data) => {
-    if (err) throw err;
+  // Write the filtered data to the db.json file
+  writeDbFile(filteredData);
 
-    // Copmpare ID of deleted note to notes in the db.json file
-    dbData = JSON.parse(data);
-    // Go through notes, to match and then splice the one selected for deletion
-    for (let i = 0; i < dbData.length; i++) {
-      if (dbData[i].id === deleteNote) {
-        dbData.splice([i], 1);
-      }
-    }
-    console.log(dbData);
-    stringData = JSON.stringify(dbData);
-
-    fs.writeFile('./db/db.json', stringData, (err, data) => {
-      if (err) throw err;
-    });
-  });
-  // Express send response, but with no need to navigate, 204 No Content
+  // Send a response status of 204 No Content
   res.status(204).send();
 });
 
+// Export the router module
 module.exports = router;
