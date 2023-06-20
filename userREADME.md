@@ -1,5 +1,5 @@
 # 11 Express.js:Note Taker
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ 
 
   ## Description
   
@@ -20,11 +20,10 @@
   
   ## Usage
   
-  it will help me organize better my appointments and homework assignment as well as personal responsabilities 
+  it will help mebetter organize my appointments, homework assignments, ands personal responsibilities.
   
   ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
   
   ## Contributing
   
