@@ -1,1 +1,2 @@
 # Notetaker
+[Walkthrough video]
